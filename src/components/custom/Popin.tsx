@@ -1,14 +1,14 @@
 import React from "react";
 
 export interface PopinProps {
-    display: boolean;
+    displayPopin: boolean;
     toggleDisplay: () => void;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export const Popin = (props: PopinProps) => {
     return <>
-        {props.display && <div className='blurred-overlay' onClick={props.toggleDisplay}>
+        {props.displayPopin && <div className='blurred-overlay' onClick={props.toggleDisplay}>
             <div className="popin" onClick={(e) => e.stopPropagation()}>
                 {props.children}
             </div>

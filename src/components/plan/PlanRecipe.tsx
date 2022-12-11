@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { LoaderContext } from "../../contexts/LoaderContext";
 import { savePlan } from "../../dataServices/PlanService";
+import { usePopin } from "../../hooks/usePopin";
 import { getDateStringForInput, parseDate } from "../../tools/DateUtils";
 import { FieldErrorDisplay } from "../custom/FieldErrorDisplay";
 import { Popin } from "../custom/Popin";
@@ -23,9 +24,7 @@ const defaultPlan: RecipePlanForm = {
 };
 
 export const PlanRecipe = (props: PlanRecipeProps) => {
-    const [displayPopin, setDisplayPopin] = useState(false);
-    const toggleDisplay = () => setDisplayPopin(!displayPopin);
-
+    const popinProps = usePopin();
     const [dateValue, setDateValue] = useState(getDateStringForInput(new Date()));
     const { setLoading } = useContext(LoaderContext);
 
@@ -38,7 +37,7 @@ export const PlanRecipe = (props: PlanRecipeProps) => {
         savePlan(data, props.recipeId, props.recipeName)
             .then(() => {
                 toast.success('Recette planifiée !');
-                toggleDisplay();
+                popinProps.toggleDisplay();
                 reset(defaultPlan);
                 setDateValue(getDateStringForInput(new Date()));
             })
@@ -61,8 +60,8 @@ export const PlanRecipe = (props: PlanRecipeProps) => {
     console.log(watch());
 
     return <>
-        <button onClick={toggleDisplay}>Planifier</button>
-        <Popin display={displayPopin} toggleDisplay={toggleDisplay}>
+        <button onClick={popinProps.toggleDisplay}>Planifier</button>
+        <Popin {...popinProps}>
             <h4>Planifier</h4>
             <p>{props.recipeName}</p>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -84,7 +83,7 @@ export const PlanRecipe = (props: PlanRecipeProps) => {
                 </div>
                 <div className="button-column">
                     <input type="submit" className="button-primary" value="OK" />
-                    <button onClick={toggleDisplay}>Annuler</button>
+                    <button onClick={popinProps.toggleDisplay}>Annuler</button>
                 </div>
             </form>
         </Popin>

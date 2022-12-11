@@ -52,3 +52,4 @@ Undo with :
 - replace native delete popup by new delete popin + add toaster on deletion + loader
 - split css file... use sass ? or css in ts ?
 - error messages positions... writerecipe
+- export json => dedicated comp

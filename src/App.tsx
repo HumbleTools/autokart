@@ -2,7 +2,7 @@ import { Navigate, NavLink, Route, Routes } from 'react-router-dom';
 import { Home, MenuButtons } from './components/Home';
 import { WriteRecipe } from './components/recipe/write/WriteRecipe';
 import { ViewRecipe } from './components/recipe/view/ViewRecipe';
-import { IUserContext, UserContext } from './contexts/UserContext';
+import { ISafeUserContext, IUserContext, UserContext } from './contexts/UserContext';
 import { useContext, useState } from 'react';
 import { LoaderContext } from './contexts/LoaderContext';
 import { SearchRecipes } from './components/recipe/search/SearchRecipes';
@@ -10,6 +10,8 @@ import { Toaster } from './tools/Toaster';
 import { ViewPlanning } from './components/plan/ViewPlanning';
 import { ShoppingList } from './components/shopping/ShoppingList';
 import { useSwipe } from './hooks/useSwipe';
+import { AdminMenu } from './components/admin/AdminMenu';
+import { isAdmin } from './dataServices/UserService';
 
 const App = () => {
   const userContext = useContext(UserContext);
@@ -35,7 +37,7 @@ const App = () => {
       <Header {...userContext} />
       <div className='main'>
         {userContext.isFullyLoggedIn() && <div className={`menu ${menuState}`}>
-          <MenuButtons onButtonClicked={closeMenu} />
+          <MenuButtons onButtonClicked={closeMenu} userContext={userContext as ISafeUserContext}/>
         </div>}
         <div className='container'>
           {userContext.isFullyLoggedIn() ? (
@@ -53,10 +55,9 @@ const App = () => {
               </Route>
               <Route path="/planning" element={<ViewPlanning />} />
               <Route path="/shopping" element={<ShoppingList />} />
-              {/* {isAdmin(userContext.roles) && <>
+              {isAdmin(userContext.roles) && <>
                   <Route path="/admin" element={<AdminMenu />} />
-                  <Route path="/admin/shoppingCategories" element={<ShoppingCategories />} />
-                </>} */}
+              </>}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           ) : (

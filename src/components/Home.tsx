@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { Noop } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { LoaderContext } from "../contexts/LoaderContext";
-import { getSafeUser, UserContext } from "../contexts/UserContext";
+import { getSafeUser, ISafeUserContext, UserContext } from "../contexts/UserContext";
 import { getLastNRecipes, DbRecipeWithId } from "../dataServices/RecipeService";
+import { isAdmin } from "../dataServices/UserService";
 
 export const Home = () => {
 
@@ -28,9 +29,13 @@ export const Home = () => {
         }
     }, [recipesFetched, loading, setLoading]);
 
+    const menuProps = {
+        userContext
+    };
+
     return <>
         <h4 className="mt-1">Bienvenue {userContext.user.displayName} !</h4>
-        <MenuButtons />
+        <MenuButtons {...menuProps} />
         {recipesFetched && !loading && <>
             <p>{message}</p>
             <ul>{recipesList}</ul>
@@ -40,6 +45,7 @@ export const Home = () => {
 
 interface MenuButtonsProps {
     onButtonClicked?: Noop;
+    userContext: ISafeUserContext;
 }
 
 export const MenuButtons = (props: MenuButtonsProps) => <div className="row button-column">
@@ -55,7 +61,8 @@ export const MenuButtons = (props: MenuButtonsProps) => <div className="row butt
     <Link to="/shopping">
         <button className="button-primary" onClick={props.onButtonClicked}>Liste de courses</button>
     </Link>
-    {/* {isAdmin(userContext.roles) && <Link to="/admin">
-    <button className="delete-button">Admin</button>
-</Link>} */}
+    {isAdmin(props.userContext.roles) && 
+    <Link to="/admin">
+        <button className="delete-button">Admin</button>
+    </Link>}
 </div>;
