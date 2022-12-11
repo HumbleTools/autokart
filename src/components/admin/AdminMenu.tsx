@@ -4,23 +4,22 @@ import { LoaderContext } from "../../contexts/LoaderContext";
 import { getSafeUser, UserContext } from "../../contexts/UserContext";
 import { CookbookRecipe, getAllRecipes, mapToCookbookRecipes } from "../../dataServices/RecipeService";
 import { isAdmin } from "../../dataServices/UserService";
+import { usePopin } from "../../hooks/usePopin";
 import { Popin } from "../custom/Popin";
 
 export const AdminMenu = () => {
     const userContext = getSafeUser(useContext(UserContext));
-
     const { setLoading } = useContext(LoaderContext);
-    const [displayPopin, setDisplayPopin] = useState(false);
-    const toggleDisplay = () => setDisplayPopin(!displayPopin);
+
+    const popinProps = usePopin();
     const [cookBookData, setCookBookData] = useState([] as CookbookRecipe[]);
 
     const handleExportClick = () => {
         setLoading(true);
-        // export that in dedicated comp
         getAllRecipes()
         .then(data => {
             setCookBookData(mapToCookbookRecipes(data));
-            toggleDisplay();
+            popinProps.toggleDisplay();
         })
         .catch((error => {
             console.error(error);
@@ -36,7 +35,7 @@ export const AdminMenu = () => {
         <div className="row button-column">
             <button className="button-primary" onClick={handleExportClick}>Exporter les recettes</button>
         </div>
-        <Popin display={displayPopin} toggleDisplay={toggleDisplay}>
+        <Popin {...popinProps}>
             <h4>Exporter les recettes</h4>
             Les données sont disponibles au format JSON.<br />
             <a type="button"

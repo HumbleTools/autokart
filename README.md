@@ -52,4 +52,4 @@ Undo with :
 - replace native delete popup by new delete popin + add toaster on deletion + loader
 - split css file... use sass ? or css in ts ?
 - error messages positions... writerecipe
-- build a hook for Popin https://blog.bitsrc.io/new-react-design-pattern-return-component-from-hooks-79215c3eac00
+- export json => dedicated comp
