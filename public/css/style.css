@@ -260,6 +260,10 @@ div.separator {
     text-align: center;
 }
 
+p.planline {
+    line-height: 2.4em;
+}
+
 /*loader*/
 .loader-overlay {
     position: fixed;

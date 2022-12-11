@@ -77,7 +77,7 @@ const mapPlans = (handleDelete: HandleDelete, plans: DbRecipePlan[]) => {
         const nextDate = getDateString(plan.date);
         const dateChanged = curDate !== nextDate;
 
-        const planOutput = <p>
+        const planOutput = <p className="planline">
             <NavLink to={`/view/${plan.recipeId}`}>{plan.recipeName}</NavLink> ({plan.repas}) 
             <button className="delete-button float-right" onClick={handleDelete(plan, index)}>Retirer</button>
         </p>;
