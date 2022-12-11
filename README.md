@@ -16,7 +16,11 @@
 
 ## Git notes
 ### Personal project files
-The following files should not be modified with personal/project data on the remote. Make sure you don't push their modifications, by using the following command :
+The following files should not be modified with personal/project data on a public remote.
+- src/firebase-config.ts
+- .firebaserc
+
+Make sure you don't push any modification on them, by using the following command :
 
 `git update-index --skip-worktree <file>`
 
@@ -24,11 +28,8 @@ Undo with :
 
 `git update-index --no-skip-worktree <file>`
 
-Files :
-- src/firebase-config.ts
-- .firebaserc
-
-## Feature backlog
+### Backlogs
+## Features
 - revoir ingrédients : vue compacte avec popin
 - popin pour erreurs recettes ? meilleur display, pas de déformation etc
 - Display firstname only ?
@@ -43,7 +44,7 @@ Files :
 - isAdmin should be served from userContext
 - enhance grouping shopping items function (plurals ? number of words in common ? synonyms ?)
 
-## Technical backlog
+## Technical
 - write full project setup in readme
 - add E2E tests with cypress
 - configure eslint
