@@ -33,6 +33,8 @@ export interface DbRecipeWithId extends DbRecipe {
     id: string;
 }
 
+export interface CookbookRecipe extends Omit<DbRecipeWithId, 'id'|'keywords'> {}
+
 export const RECIPES = 'recipes';
 
 type QueryProvider = (db: Firestore) => Query<DocumentData>;
@@ -52,13 +54,11 @@ const queryRecipes: (query: QueryProvider) => Promise<DbRecipeWithId[]> =
     };
 
 export const getLastNRecipes: (limitValue: number) => Promise<DbRecipeWithId[]> =
-    async limitValue => {
-        return queryRecipes(db => query(
+    async limitValue => queryRecipes(db => query(
             collection(db, 'recipes'),
             orderBy('createdAt', 'desc'),
             limit(limitValue)
         ));
-    };
 
 export const getRecipesByWords: (words: string[], searchField: 'keywords'|'tags') => Promise<DbRecipeWithId[]> =
     async (words, searchField) => {
@@ -149,3 +149,15 @@ export const deleteRecipe = async (id: string) => {
     const db = getFirestore(getApp());
     deleteDoc(doc(db, `${RECIPES}/${id}`));
 };
+
+export const getAllRecipes = async () => 
+    queryRecipes(db => query(
+        collection(db, 'recipes'),
+        orderBy('name')
+    ));
+
+export const mapToCookbookRecipes = (recipes: DbRecipeWithId[]) => 
+    recipes.map(it => {
+        const {id, keywords, ...cookbookRecipe} = it;
+        return cookbookRecipe;
+    });
