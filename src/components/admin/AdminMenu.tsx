@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LoaderContext } from "../../contexts/LoaderContext";
 import { getSafeUser, UserContext } from "../../contexts/UserContext";
@@ -35,9 +34,6 @@ export const AdminMenu = () => {
     return isAdmin(userContext.roles) ? <>
         <h4 className="mt-1">Menu admin</h4>
         <div className="row button-column">
-            <Link to="/admin/shoppingCategories">
-                <button className="button-primary">Catégories shopping</button>
-            </Link>
             <button className="button-primary" onClick={handleExportClick}>Exporter les recettes</button>
         </div>
         <Popin display={displayPopin} toggleDisplay={toggleDisplay}>

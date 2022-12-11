@@ -11,7 +11,6 @@ import { ViewPlanning } from './components/plan/ViewPlanning';
 import { ShoppingList } from './components/shopping/ShoppingList';
 import { useSwipe } from './hooks/useSwipe';
 import { AdminMenu } from './components/admin/AdminMenu';
-import { ShoppingCategories } from './components/admin/ShoppingCategories';
 import { isAdmin } from './dataServices/UserService';
 
 const App = () => {
@@ -58,7 +57,6 @@ const App = () => {
               <Route path="/shopping" element={<ShoppingList />} />
               {isAdmin(userContext.roles) && <>
                   <Route path="/admin" element={<AdminMenu />} />
-                  <Route path="/admin/shoppingCategories" element={<ShoppingCategories />} />
               </>}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
