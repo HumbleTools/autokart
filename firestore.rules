@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isLoggedIn() {
+        return request.auth != null;
+    }
+
+    function hasAnyRole(roles) {
+        return isLoggedIn() && get(/databases/$(database)/documents/users/$(request.auth.token.email)).data.roles.hasAny(roles);
+    }
+	  
+    match /users/{userEmail} {
+      allow create, write, delete: if false;
+      allow read: if isLoggedIn() && request.auth.token.email==userEmail;
+    }
+
+		match /recipes/{recipeId} {
+      allow read: if hasAnyRole(['admin', 'writer', 'reader']);
+      allow create, write, delete: if hasAnyRole(['admin', 'writer']);
+    }
+    match /plans/{planId} {
+      allow read: if hasAnyRole(['admin', 'writer', 'reader']);
+      allow create, write, delete: if hasAnyRole(['admin', 'writer']);
+    }
+    match /shoppingItems/{shoppingItemId} {
+      allow read: if hasAnyRole(['admin', 'writer', 'reader']);
+      allow create, write, delete: if hasAnyRole(['admin', 'writer']);
+    }
+  }
+}
