@@ -1,44 +1,49 @@
-import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { LoaderContext } from "../../../contexts/LoaderContext";
-import { deleteRecipe, getRecipe, Ingredient, DbRecipe } from "../../../dataServices/RecipeService";
-import { buildIngredientLabel } from "../../../tools/LabelUtils";
-import { displayTags } from "../../../tools/TagTools";
-import { PlanRecipe } from "../../plan/PlanRecipe";
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { LoaderContext } from '../../../contexts/LoaderContext'
+import { deleteRecipe, getRecipe, Ingredient, DbRecipe } from '../../../dataServices/RecipeService'
+import { buildIngredientLabel } from '../../../tools/LabelUtils'
+import { displayTags } from '../../../tools/TagTools'
+import { basicCatchToast } from '../../../tools/ToasterUtils'
+import { PlanRecipe } from '../../plan/PlanRecipe'
 
 export const ViewRecipe = () => {
-    const { recipeId } = useParams();
-    const [recipe, setRecipe] = useState<DbRecipe>();
-    const navigate = useNavigate();
-    const { setLoading } = useContext(LoaderContext);
+  const { recipeId } = useParams()
+  const [recipe, setRecipe] = useState<DbRecipe>()
+  const navigate = useNavigate()
+  const { setLoading } = useContext(LoaderContext)
 
-    const handleDelete = () => {
-        if (window.confirm('Supprimer cette recette ?') && recipeId) {
-            setLoading(true);
-            deleteRecipe(recipeId).then(() => {
-                setLoading(false);
-                toast.success('Recette supprimée !');
-                navigate('/');
-            });
-        }
-    };
-    const handleEdit = () => {
-        navigate(`/writeRecipe/${recipeId}`);
-    };
+  const handleDelete = () => {
+    if (window.confirm('Supprimer cette recette ?') && recipeId) {
+      setLoading(true)
+      deleteRecipe(recipeId)
+        .then(() => {
+          setLoading(false)
+          toast.success('Recette supprimée !')
+          navigate('/')
+        })
+        .catch(basicCatchToast)
+    }
+  }
+  const handleEdit = () => {
+    navigate(`/writeRecipe/${recipeId ?? ''}`)
+  }
 
-    useEffect(() => {
-        if (!recipe && recipeId) {
-            setLoading(true);
-            getRecipe(recipeId).then(data => {
-                setRecipe(data);
-                setLoading(false);
-            });
-        }
-    }, [recipe, recipeId, setLoading]);
+  useEffect(() => {
+    if ((recipe == null) && recipeId) {
+      setLoading(true)
+      getRecipe(recipeId)
+        .then(data => {
+          setRecipe(data)
+          setLoading(false)
+        })
+        .catch(basicCatchToast)
+    }
+  }, [recipe, recipeId, setLoading])
 
-    return <>
-        {recipe &&
+  return <>
+        {(recipe != null) &&
             <>
                 <h4 className="mt-1">{recipe.name}</h4>
                 <p className="text-right">Pour {recipe.servings} personne{recipe.servings >= 1 ? 's' : ''}</p>
@@ -51,13 +56,13 @@ export const ViewRecipe = () => {
                     <ul>{recipe.ingredients.map(it => ingredientView(it))}</ul>
                 </>}
                 <div className="button-column">
-                    <PlanRecipe recipeName={recipe.name} recipeId={recipeId + ''} /><br />
+                    <PlanRecipe recipeName={recipe.name} recipeId={recipeId ?? ''} /><br />
                     <button className="button-primary" onClick={handleEdit}>Éditer</button><br />
                     <button className="delete-button" onClick={handleDelete}>Supprimer</button><br />
                 </div>
             </>}
-    </>;
-};
+    </>
+}
 
-const ingredientView = (ingredient: Ingredient) => 
-    <li key={ingredient.name}>{buildIngredientLabel(ingredient)}</li>;
+const ingredientView = (ingredient: Ingredient) =>
+    <li key={ingredient.name}>{buildIngredientLabel(ingredient)}</li>

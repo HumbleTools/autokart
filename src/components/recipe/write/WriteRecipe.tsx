@@ -1,120 +1,124 @@
-import { useContext, useEffect, useReducer } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { reducer, initialState, getSetRecipeToEditAction } from "./WriteRecipeReducer";
-import { handleStoreRecipe, shouldFetchRecipe } from "./WriteRecipeLogic";
-import { FieldErrorDisplay } from "../../custom/FieldErrorDisplay";
-import { getRecipe, Ingredient, mapToRecipeFormResult, RecipeFormResult } from "../../../dataServices/RecipeService";
-import { useNavigate, useParams } from "react-router-dom";
-import { getSafeUser, UserContext } from "../../../contexts/UserContext";
-import { LoaderContext } from "../../../contexts/LoaderContext";
-import { NumberInputProps, NumberInput } from "../../custom/NumberInput";
-import { displayTags, parseTags } from "../../../tools/TagTools";
-import { AISLES, buildOptions, UNITS } from "../../../constants/DropdownValues";
+import { useContext, useEffect, useReducer } from 'react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { reducer, initialState, getSetRecipeToEditAction } from './WriteRecipeReducer'
+import { handleStoreRecipe, shouldFetchRecipe } from './WriteRecipeLogic'
+import { FieldErrorDisplay } from '../../custom/FieldErrorDisplay'
+import { getRecipe, Ingredient, mapToRecipeFormResult, RecipeFormResult } from '../../../dataServices/RecipeService'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getSafeUser, UserContext } from '../../../contexts/UserContext'
+import { LoaderContext } from '../../../contexts/LoaderContext'
+import { NumberInputProps, NumberInput } from '../../custom/NumberInput'
+import { displayTags, parseTags } from '../../../tools/TagTools'
+import { AISLES, buildOptions, UNITS } from '../../../constants/DropdownValues'
+import { basicCatchToast } from '../../../tools/ToasterUtils'
+import { voidHandleSubmit } from '../../../tools/ReactHookFormUtils'
 
 const mainFormRules = {
-    name: {
-        required: { value: true, message: 'Le nom doit être renseigné' }
-    },
-    description: {
-        maxLength: { value: 300, message: 'La description ne peut dépasser 300 caractères' }
-    },
-    servings: {
-        valueAsNumber: true,
-        min: { value: 1, message: 'Le nombre de parts doit être au minimum 1' },
-        required: { value: true, message: 'Le nombre de parts doit être renseigné' }
-    },
-    tags: {
-        maxLength: { value: 300, message: 'Les tags ne peut dépasser 300 caractère en tout' }
-    }
-};
+  name: {
+    required: { value: true, message: 'Le nom doit être renseigné' }
+  },
+  description: {
+    maxLength: { value: 300, message: 'La description ne peut dépasser 300 caractères' }
+  },
+  servings: {
+    valueAsNumber: true,
+    min: { value: 1, message: 'Le nombre de parts doit être au minimum 1' },
+    required: { value: true, message: 'Le nombre de parts doit être renseigné' }
+  },
+  tags: {
+    maxLength: { value: 300, message: 'Les tags ne peut dépasser 300 caractère en tout' }
+  }
+}
 
 const ingredientFormRules = {
-    name: {
-        required: { value: true, message: 'Le nom doit être renseigné' }
-    },
-    quantity: {
-        valueAsNumber: true,
-        min: { value: 1, message: 'La quantité doit être au minimum 1' },
-        required: { value: true, message: 'La quantité doit être renseignée' }
-    },
-    unit: {
-        required: { value: true, message: `L'unité doit être renseignée` }
-    },
-    aisle: {
-        required: { value: true, message: `Le rayon doit être renseigné` }
-    }
-};
+  name: {
+    required: { value: true, message: 'Le nom doit être renseigné' }
+  },
+  quantity: {
+    valueAsNumber: true,
+    min: { value: 1, message: 'La quantité doit être au minimum 1' },
+    required: { value: true, message: 'La quantité doit être renseignée' }
+  },
+  unit: {
+    required: { value: true, message: 'L\'unité doit être renseignée' }
+  },
+  aisle: {
+    required: { value: true, message: 'Le rayon doit être renseigné' }
+  }
+}
 
 const defaultRecipeValues: RecipeFormResult = {
-    name: null as unknown as string,
-    description: null as unknown as string,
-    tags: null as unknown as string,
-    servings: 0,
-    ingredients: []
-};
+  name: null as unknown as string,
+  description: null as unknown as string,
+  tags: null as unknown as string,
+  servings: 0,
+  ingredients: []
+}
 const defaultIngredient: Ingredient = {
-    name: null as unknown as string,
-    quantity: 0,
-    unit: null as unknown as string,
-    aisle: null as unknown as string,
+  name: null as unknown as string,
+  quantity: 0,
+  unit: null as unknown as string,
+  aisle: null as unknown as string
 }
 
 export const WriteRecipe = () => {
-    const { user } = getSafeUser(useContext(UserContext));
-    const [state, dispatch] = useReducer(reducer, initialState);
-    const { recipeId } = useParams();
-    const { setLoading } = useContext(LoaderContext);
-    const navigate = useNavigate();
+  const { user } = getSafeUser(useContext(UserContext))
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { recipeId } = useParams()
+  const { setLoading } = useContext(LoaderContext)
+  const navigate = useNavigate()
 
-    const useFormReturn = useForm<RecipeFormResult>({
-        defaultValues: { ...defaultRecipeValues }
-    });
-    const { control, handleSubmit, watch, register, formState: { errors }, reset, getValues, setValue } = useFormReturn;
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'ingredients'
-    });
+  const useFormReturn = useForm<RecipeFormResult>({
+    defaultValues: { ...defaultRecipeValues }
+  })
+  const { control, handleSubmit, watch, register, formState: { errors }, reset, getValues, setValue } = useFormReturn
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'ingredients'
+  })
 
-    useEffect(() => {
-        if (shouldFetchRecipe(state, recipeId)) {
-            setLoading(true);
-            getRecipe(recipeId).then(data => {
-                const recipeData = mapToRecipeFormResult(data);
-                dispatch(getSetRecipeToEditAction(recipeData));
-                reset(recipeData);
-                setLoading(false)
-            });
-        }
-    }, [recipeId, reset, state, setLoading]);
+  useEffect(() => {
+    if (shouldFetchRecipe(state, recipeId)) {
+      setLoading(true)
+      getRecipe(recipeId ?? '')
+        .then(data => {
+          const recipeData = mapToRecipeFormResult(data)
+          dispatch(getSetRecipeToEditAction(recipeData))
+          reset(recipeData)
+          setLoading(false)
+        })
+        .catch(basicCatchToast)
+    }
+  }, [recipeId, reset, state, setLoading])
 
-    const onSubmit: SubmitHandler<RecipeFormResult> = data => {
-        handleStoreRecipe(
-            () => reset({ ...defaultRecipeValues }),
-            setLoading,
-            navigate
-        )(user, data, recipeId);
-    };
+  const onSubmit = handleSubmit(data => {
+    handleStoreRecipe(
+      () => reset({ ...defaultRecipeValues }),
+      setLoading,
+      navigate
+    )(user, data, recipeId)
+  })
 
-    console.log(watch());
+  console.log(watch())
 
-    const servingsProps: NumberInputProps = {
-        id: 'main.servings',
-        label: 'Nombre de parts',
-        hiddenInput: true,
-        fieldName: 'servings',
-        fieldRules: mainFormRules.servings,
-        getValue: () => getValues().servings,
-        setValue,
-        register,
-        error: errors.servings
-    };
+  const servingsProps: NumberInputProps = {
+    id: 'main.servings',
+    label: 'Nombre de parts',
+    hiddenInput: true,
+    fieldName: 'servings',
+    fieldRules: mainFormRules.servings,
+    getValue: () => getValues().servings,
+    setValue,
+    register,
+    error: errors.servings
+  }
 
-    const formattedTags = displayTags(parseTags(getValues().tags));
+  const formattedTags = displayTags(parseTags(getValues().tags))
 
-    return (
+  return (
         <>
             <h4 className="mt-1">Créer une recette</h4>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={voidHandleSubmit(onSubmit)}>
                 <div className="row">
                     <div className="six columns">
                         <label htmlFor="main.name">Nom</label>
@@ -140,21 +144,21 @@ export const WriteRecipe = () => {
 
                 {
                     fields.map((it, index) => {
-                        const indexedPrefix = `ing.${index}`;
+                      const indexedPrefix = `ing.${index}`
 
-                        const quantityProps: NumberInputProps = {
-                            id: `${indexedPrefix}.quantity`,
-                            label: 'Quantité',
-                            hiddenInput: false,
-                            fieldName: `ingredients.${index}.quantity`,
-                            fieldRules: ingredientFormRules.quantity,
-                            getValue: () => getValues().ingredients?.[index]?.quantity,
-                            setValue,
-                            register,
-                            error: errors?.ingredients?.[index]?.quantity,
-                        };
+                      const quantityProps: NumberInputProps = {
+                        id: `${indexedPrefix}.quantity`,
+                        label: 'Quantité',
+                        hiddenInput: false,
+                        fieldName: `ingredients.${index}.quantity`,
+                        fieldRules: ingredientFormRules.quantity,
+                        getValue: () => getValues().ingredients?.[index]?.quantity,
+                        setValue,
+                        register,
+                        error: errors?.ingredients?.[index]?.quantity
+                      }
 
-                        return <>
+                      return <>
                             <div className="separator" />
                             <fieldset key={it.id}>
                                 <div className="input-row">
@@ -185,17 +189,17 @@ export const WriteRecipe = () => {
                                     <button className="delete-ing-button" type="button" onClick={() => remove(index)}>Retirer</button>
                                 </div>
                             </fieldset>
-                        </>;
+                        </>
                     })
                 }
 
                 <div className="button-column">
-                    <button type="button" onClick={() => { append({ ...defaultIngredient }); }}>
+                    <button type="button" onClick={() => { append({ ...defaultIngredient }) }}>
                         ajouter ingrédient
                     </button>
                     <input type="submit" className="button-primary" value="Enregistrer recette" />
                 </div>
             </form>
         </>
-    );
-};
+  )
+}

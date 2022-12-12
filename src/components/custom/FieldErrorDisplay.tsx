@@ -1,23 +1,20 @@
-import { FieldError } from "react-hook-form";
+import { FieldError } from 'react-hook-form'
 
 const errorMessageStyle = {
-    color: 'red',
-    fontWeight: 'bold',
-    fontSize: 'small'
-};
+  color: 'red',
+  fontWeight: 'bold',
+  fontSize: 'small'
+}
 
 interface FieldErrorDisplayProps {
-    fieldError?: FieldError;
+  fieldError?: FieldError
 }
 
 export const FieldErrorDisplay = (props: FieldErrorDisplayProps) => {
-    return (
-        <>
-            {props.fieldError && props.fieldError.message && 
-                <>
-                    <span style={errorMessageStyle}>{props.fieldError.message}</span>
-                    <br />
-                </>}
-        </>
-    );
-};
+  return props.fieldError?.message
+    ? <>
+        <span style={errorMessageStyle}>{props.fieldError.message}</span>
+        <br />
+    </>
+    : <></>
+}

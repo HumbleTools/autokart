@@ -47,8 +47,8 @@ Undo with :
 
 ## Technical
 - write full project setup in readme
-- configure eslint
-- split css file... use css in ts ?
+- configure lint-staged ?
+- split css file... use css in ts ? 
 - add E2E tests with cypress
 - try to fix page jump when keyboard appears on create recipe screen ?
 - replace native delete popup by new delete popin + add toaster on deletion + loader
