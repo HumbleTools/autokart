@@ -1,8 +1,8 @@
-import 'react-toastify/dist/ReactToastify.min.css';
-import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css'
+import { ToastContainer } from 'react-toastify'
 
 export const Toaster = () => {
-    return <ToastContainer 
+  return <ToastContainer
     position="bottom-center"
     autoClose={3000}
     hideProgressBar
@@ -12,5 +12,5 @@ export const Toaster = () => {
     pauseOnFocusLoss
     draggable={false}
     theme={'colored'}
-    pauseOnHover />;
-};
+    pauseOnHover />
+}

@@ -1,41 +1,41 @@
-import { User } from "firebase/auth";
-import React from "react";
-import { createContext } from "react";
-import { useFirebase } from "../hooks/useFirebase";
+import { User } from 'firebase/auth'
+import React, { createContext } from 'react'
+
+import { useFirebase } from '../hooks/useFirebase'
 
 interface ISignContext {
-  signIn: () => void;
-  signOut: () => void;
-  isFullyLoggedIn: () => boolean;
+  signIn: () => void
+  signOut: () => void
+  isFullyLoggedIn: () => boolean
 }
 
 export interface IUserContext extends ISignContext {
-  user?: User;
-  roles?: string[];
+  user?: User
+  roles?: string[]
 }
 
 export interface ISafeUserContext extends ISignContext {
-  user: User;
-  roles: string[];
+  user: User
+  roles: string[]
 }
 
-export const UserContext = createContext<IUserContext>({} as IUserContext);
+export const UserContext = createContext<IUserContext>({} as IUserContext)
 
 interface ProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 };
 
 export const UserProvider = (props: ProviderProps) => {
-    const context = useFirebase();
-    return <UserContext.Provider value={context}>{props.children}</UserContext.Provider>;
-};
+  const context = useFirebase()
+  return <UserContext.Provider value={context}>{props.children}</UserContext.Provider>
+}
 
 export const getSafeUser: (context: IUserContext) => ISafeUserContext = (context) => {
-  if(!context.user) {
-    throw new Error('User is undefined in context at this point !');
+  if (context.user == null) {
+    throw new Error('User is undefined in context at this point !')
   }
-  if(!context.roles) {
-    throw new Error('User has no roles in context at this point !');
+  if (context.roles == null) {
+    throw new Error('User has no roles in context at this point !')
   }
-  return {...context} as ISafeUserContext;
-};
+  return { ...context } as ISafeUserContext
+}
