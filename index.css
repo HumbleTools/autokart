@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: fastaction;
+    src: url(./src/assets/fastaction.ttf);
+}
+
+#bg-menu.menu-opened {
+    width: 300vw;
+    height: 90vh;
+    border-radius: unset;
+}
+
+#line-1.menu-opened {
+    d: path("M5,5 L19,19");
+}
+#line-2.menu-opened {
+    d: path("M5,19 L19,5");
+}
+  
