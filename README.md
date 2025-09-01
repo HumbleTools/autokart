@@ -30,7 +30,6 @@ Undo with :
 `git update-index --no-skip-worktree <file>`
 
 ### Backlog
-- add tri-state for auth hook and test-it
 - use css modules
 - setup header with photo and logout button
 - setup menu with links
