@@ -16,7 +16,7 @@ const mainFormRules = {
         required: { value: true, message: 'Le nom doit être renseigné' }
     },
     description: {
-        maxLength: { value: 300, message: 'La description ne peut dépasser 300 caractères' }
+        maxLength: { value: 2000, message: 'La description ne peut dépasser 2000 caractères' }
     },
     servings: {
         valueAsNumber: true,
