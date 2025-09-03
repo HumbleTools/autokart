@@ -10,11 +10,12 @@ const AuthStatuses = {
     LOGGED_OUT: 'LOGGED_OUT',
     PENDING: 'PENDING'
 };
+const MIN_PENDING_TIME = 500;
 
 export const useFirebase = () => {
     const [user, setUser] = useState<User | null>(null);
     const [userRoles, setUserRoles] = useState<string[]>([]);
-    const [authStatus, setAuthStatus] = useState<string>(AuthStatuses.PENDING);
+    const [loginState, setLoginState] = useState<string>(AuthStatuses.PENDING);
 
     const processUser = (userToProcess: User | null) => {
         if (userToProcess) {
@@ -24,11 +25,11 @@ export const useFirebase = () => {
                     setUser(userToProcess);
                 })
                 .catch(basicCatchToast)
-                .finally(() => setAuthStatus(AuthStatuses.LOGGED_IN));
+                .finally(() => setTimeout(() => setLoginState(AuthStatuses.LOGGED_IN), MIN_PENDING_TIME));
         } else {
             setUser(null);
             setUserRoles([]);
-            setAuthStatus(AuthStatuses.LOGGED_OUT);
+            setTimeout(() => setLoginState(AuthStatuses.LOGGED_OUT), MIN_PENDING_TIME);
         }
     };
 
@@ -37,8 +38,10 @@ export const useFirebase = () => {
     }
 
     useEffect(() => {
-        if (authStatus === AuthStatuses.PENDING) {
-            onAuthStateChanged(getAuth(), changedUser => processUser(changedUser!));
+        if (loginState === AuthStatuses.PENDING) {
+            onAuthStateChanged(getAuth(), changedUser => {
+                processUser(changedUser);
+            });
             getRedirectResult(getAuth())
                 .then(result => {
                     if (result && result.user) {
@@ -47,29 +50,36 @@ export const useFirebase = () => {
                 })
                 .catch(basicCatchToast);
         }
-    }, [authStatus]);
+    }, [loginState]);
+
 
     const signIn = () => {
+        setLoginState(AuthStatuses.PENDING);
         const signInMethod = process.env.NODE_ENV == 'development' ?
             signInWithPopup : signInWithRedirect; // Popup is mandatory for localhost
         signInMethod(getAuth(), new GoogleAuthProvider())
             .catch(basicCatchToast);
-        setAuthStatus(AuthStatuses.PENDING);
     };
 
-    const signOut = () => getAuth()
+
+    const signOut = () => {
+        setLoginState(AuthStatuses.PENDING);
+        getAuth()
         .signOut()
         .then(() => {
             processUser(null);
             deleteApp(getApp()).catch(basicCatchToast);
         })
         .catch(basicCatchToast);
+    };
 
     return {
         user,
         userRoles,
         signIn,
         signOut,
-        isAuthPending: authStatus === AuthStatuses.PENDING
+        isLoggingPending: loginState === AuthStatuses.PENDING,
+        isLoggedIn: loginState === AuthStatuses.LOGGED_IN,
+        isLoggedOut: loginState === AuthStatuses.LOGGED_OUT,
     };
 }

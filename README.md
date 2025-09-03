@@ -30,8 +30,9 @@ Undo with :
 `git update-index --no-skip-worktree <file>`
 
 ### Backlog
-- use css modules
-- setup header with photo and logout button
+- responsivite (h1 header size for mobile)
+- setup overlay for logged-out and pending states + spinner ?
+- in the firebase rules, if the roles notion disapears, then isLoggedIn is dangerous. Check the user email in it
 - setup menu with links
 - setup router with mock pages
 - add recipe search

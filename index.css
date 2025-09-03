@@ -2,3 +2,7 @@
     font-family: fastaction;
     src: url(./src/assets/fastaction.ttf);
 }
+
+body {
+    margin: 0;
+}
