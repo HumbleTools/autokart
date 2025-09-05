@@ -30,7 +30,8 @@ Undo with :
 `git update-index --no-skip-worktree <file>`
 
 ### Backlog
-- responsivite (h1 header size for mobile)
+- find solution for pending status not visible when logging is processing. Due to null user passed to processuser (idea : add new state for logging progress ?? to prevent processing null user and switching to incorrect logged-out mode)
+- responsivite ?
 - setup overlay for logged-out and pending states + spinner ?
 - in the firebase rules, if the roles notion disapears, then isLoggedIn is dangerous. Check the user email in it
 - setup menu with links

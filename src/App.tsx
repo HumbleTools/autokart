@@ -1,30 +1,105 @@
-
 import { useFirebase } from './hooks/useFirebase'
+import { useState } from 'react';
 import styles from './App.module.css';
 import classNames from 'classnames';
 
 const App = () => {
   const { user, signIn, signOut, isLoggedIn, isLoggedOut, isLoggingPending } = useFirebase();
   const headerClasses = classNames(
-    {[styles.loggedout]: isLoggedOut || isLoggingPending}
+    { [styles.loggedout]: !isLoggedIn }
   );
   return <>
     <header className={headerClasses}>
       <h1>AUTOKART</h1>
       {isLoggedIn && user?.photoURL && (
-        <img
-          src={user.photoURL}
-          alt="Avatar"
-          className={styles.avatar}
-          aria-label="Se déconnecter"
-          onClick={signOut}
-        />
+        <Avatar src={user.photoURL} onClick={signOut} />
       )}
     </header>
-    {isLoggingPending ? <div>Chargement...</div>
-      : isLoggedOut ? <button onClick={signIn}>Se connecter avec Google</button>
-      : null}
+    <div className={classNames(styles.loggingOverlay, { [styles.loggedIn]: isLoggedIn })}>
+      {isLoggingPending ? <p>Chargement...</p>
+        : isLoggedOut ? <button onClick={signIn}>Se connecter avec Google</button>
+        : null}
+    </div>
+    {isLoggedIn && <div className={styles.mainContent}>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        <br /><br />
+        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        <br /><br />
+        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        <br /><br />
+        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
+        <br /><br />
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+        <br /><br />
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+      </p>
+    </div>}
   </>;
 };
 
 export default App;
+
+interface AvatarProps {
+  src: string;
+  onClick: () => void;
+}
+
+const Avatar: React.FC<AvatarProps> = ({ src, onClick }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <img
+      src={src}
+      alt="Avatar"
+      className={styles.avatar + (loaded ? ' ' + styles.avatarVisible : '')}
+      aria-label="Se déconnecter"
+      onClick={onClick}
+      onLoad={() => setLoaded(true)}
+      style={{ opacity: loaded ? 1 : 0 }}
+    />
+  );
+};
