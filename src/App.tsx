@@ -20,11 +20,16 @@ const App = () => {
     <div className={classNames(styles.loggingOverlay, { [styles.loggedIn]: isLoggedIn })}>
       {isPending ? <span className={loaderStyles.loader} />
         : isLoggedIn ? null
-        : <button className={classNames(buttonStyles.akButton, buttonStyles.white)} onClick={signIn}>Se connecter avec Google</button>}
+          : <button className={classNames(buttonStyles.akButton, buttonStyles.white)} onClick={signIn}>Se connecter avec Google</button>}
     </div>
     {isLoggedIn && <div className={styles.mainContent}>
-      <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
-      <button className={classNames(buttonStyles.akButton)}>Bouton bleu</button>
+      <div className={buttonStyles.buttonGrid}>
+        <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
+        <button className={classNames(buttonStyles.akButton)}>Bouton bleu</button>
+        <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
+        <button className={classNames(buttonStyles.akButton)}>Bouton bleu</button>
+        <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
+      </div>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         <br /><br />

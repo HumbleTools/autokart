@@ -30,7 +30,6 @@ Undo with :
 `git update-index --no-skip-worktree <file>`
 
 ### Backlog
-- style buttons container for all types of screens but mobile first
 - responsivite ?
 - accessibilité ?
 - in the firebase rules, if the roles notion disapears, then isLoggedIn is dangerous. Check the user email in it

@@ -1,3 +1,20 @@
+.buttonGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .buttonGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+  }
+}
+
 .akButton {
   background: var(--akBlue);
   color: white;
@@ -7,7 +24,6 @@
   font-size: 1.1rem;
   font-weight: 400;
   width: 100%;
-  margin-bottom: 1rem;
 }
 
 .akButton.white {

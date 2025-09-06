@@ -2,6 +2,10 @@ html {
     --akBlue: #33C3F0;
 }
 
+html {
+    --akBlue: #33C3F0;
+}
+
 @font-face {
     font-family: fastaction;
     src: url(./src/assets/fastaction.ttf);
