@@ -1,7 +1,7 @@
 header {
   position: relative;
   padding: 3rem;
-  background: #33C3F0;
+  background: var(--akBlue);
   margin-bottom: 1rem;
   z-index: 1000;
 }
@@ -48,7 +48,7 @@ header h1 {
   left: 0;
   width: 100vw;
   height: calc(100vh - 5.5rem);
-  background: #33C3F0;
+  background: var(--akBlue);
   display: flex;
   align-items: center;
   justify-content: center;

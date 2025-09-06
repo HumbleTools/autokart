@@ -1,7 +1,8 @@
 import { useFirebase } from './hooks/useFirebase'
 import { useState } from 'react';
 import styles from './App.module.css';
-import loaderStyles from './components/Loader.module.css';
+import loaderStyles from './components/loader.module.css';
+import buttonStyles from './components/buttons.module.css';
 import classNames from 'classnames';
 
 const App = () => {
@@ -18,18 +19,20 @@ const App = () => {
     </header>
     <div className={classNames(styles.loggingOverlay, { [styles.loggedIn]: isLoggedIn })}>
       {isPending ? <span className={loaderStyles.loader} />
-      : isLoggedIn ? null 
-      : <button onClick={signIn}>Se connecter avec Google</button>}
+        : isLoggedIn ? null
+        : <button className={classNames(buttonStyles.akButton, buttonStyles.white)} onClick={signIn}>Se connecter avec Google</button>}
     </div>
     {isLoggedIn && <div className={styles.mainContent}>
+      <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
+      <button className={classNames(buttonStyles.akButton)}>Bouton bleu</button>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         <br /><br />
-        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
         <br /><br />
-        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
         <br /><br />
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
         <br /><br />
         Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
         <br /><br />
@@ -42,13 +45,13 @@ const App = () => {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
       </p>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         <br /><br />
-        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
         <br /><br />
-        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
         <br /><br />
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
         <br /><br />
         Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
         <br /><br />
@@ -61,13 +64,13 @@ const App = () => {
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
       </p>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         <br /><br />
-        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        Sed euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
         <br /><br />
-        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
         <br /><br />
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna.
         <br /><br />
         Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
         <br /><br />
