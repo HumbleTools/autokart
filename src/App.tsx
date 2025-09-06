@@ -4,6 +4,7 @@ import styles from './App.module.css';
 import loaderStyles from './components/loader.module.css';
 import buttonStyles from './components/buttons.module.css';
 import classNames from 'classnames';
+import AkButton from './components/AkButton';
 
 const App = () => {
   const { user, signIn, signOut, isLoggedIn, isPending } = useFirebase();
@@ -20,15 +21,16 @@ const App = () => {
     <div className={classNames(styles.loggingOverlay, { [styles.loggedIn]: isLoggedIn })}>
       {isPending ? <span className={loaderStyles.loader} />
         : isLoggedIn ? null
-          : <button className={classNames(buttonStyles.akButton, buttonStyles.white)} onClick={signIn}>Se connecter avec Google</button>}
+          : <AkButton variant='white' onClick={signIn} text='Se connecter avec Google' />}
     </div>
-    {isLoggedIn && <div className={styles.mainContent}>
+    {isLoggedIn && <main className={styles.mainContent}>
       <div className={buttonStyles.buttonGrid}>
-        <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
-        <button className={classNames(buttonStyles.akButton)}>Bouton bleu</button>
-        <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
-        <button className={classNames(buttonStyles.akButton)}>Bouton bleu</button>
-        <button className={classNames(buttonStyles.akButton, buttonStyles.white)}>Bouton blanc</button>
+        <AkButton variant='white' text='Bouton blanc' />
+        <AkButton variant='blue' text='Bouton bleu' />
+        <AkButton variant='white' text='Bouton blanc' />
+        <AkButton variant='blue' text='Bouton bleu' />
+        <AkButton variant='blue' text='Bouton bleu' />
+        <AkButton variant='white' text='Bouton blanc' />
       </div>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -87,7 +89,7 @@ const App = () => {
         <br /><br />
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam euismod, nunc ut laoreet dictum, massa dolor dictum urna, nec dictum massa dolor nec urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
       </p>
-    </div>}
+    </main>}
   </>;
 };
 

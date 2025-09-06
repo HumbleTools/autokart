@@ -48,6 +48,7 @@ header h1 {
   left: 0;
   width: 100vw;
   height: calc(100vh - 5.5rem);
+  padding: 2rem;
   background: var(--akBlue);
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
-html {
-    --akBlue: #33C3F0;
+* {
+    box-sizing: border-box
 }
 
 html {
@@ -13,4 +13,5 @@ html {
 
 body {
     margin: 0;
+    box-sizing: border-box;
 }
