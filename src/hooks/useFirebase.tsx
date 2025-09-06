@@ -5,32 +5,34 @@ import { getUser } from '../services/UserService';
 import { config } from '../firebase-config';
 import { basicCatchToast } from '../utils/ToasterUtils';
 
-const AuthStatuses = {
-    LOGGED_IN: 'LOGGED_IN',
-    LOGGED_OUT: 'LOGGED_OUT',
-    PENDING: 'PENDING'
-};
-const MIN_PENDING_TIME = 500;
+const isDevMode = process.env.NODE_ENV == 'development';
+const signInMethod = isDevMode ? signInWithPopup : signInWithRedirect; // Popup is mandatory for localhost
 
 export const useFirebase = () => {
     const [user, setUser] = useState<User | null>(null);
     const [userRoles, setUserRoles] = useState<string[]>([]);
-    const [loginState, setLoginState] = useState<string>(AuthStatuses.PENDING);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isPending, setIsPending] = useState(true);
 
-    const processUser = (userToProcess: User | null) => {
+    const processLogin = (userToProcess?: User | null) => {
         if (userToProcess) {
-            getUser(userToProcess!.email!)
+            getUser(userToProcess.email!)
                 .then(dbUser => {
                     setUserRoles([...dbUser.roles])
                     setUser(userToProcess);
                 })
                 .catch(basicCatchToast)
-                .finally(() => setTimeout(() => setLoginState(AuthStatuses.LOGGED_IN), MIN_PENDING_TIME));
-        } else {
-            setUser(null);
-            setUserRoles([]);
-            setTimeout(() => setLoginState(AuthStatuses.LOGGED_OUT), MIN_PENDING_TIME);
+                .finally(() => {
+                    setIsLoggedIn(true);
+                    setIsPending(false);
+                });
         }
+    };
+    const processLogout = () => {
+        setUser(null);
+        setUserRoles([]);
+        setIsLoggedIn(false);
+        setIsPending(false);
     };
 
     if (getApps().length === 0) {
@@ -38,48 +40,40 @@ export const useFirebase = () => {
     }
 
     useEffect(() => {
-        if (loginState === AuthStatuses.PENDING) {
-            onAuthStateChanged(getAuth(), changedUser => {
-                processUser(changedUser);
-            });
-            getRedirectResult(getAuth())
-                .then(result => {
-                    if (result && result.user) {
-                        processUser(result.user);
-                    }
-                })
-                .catch(basicCatchToast);
+        if (!user) {
+            if (isDevMode) {
+                onAuthStateChanged(getAuth(), changedUser => {
+                    processLogin(changedUser);
+                });
+            } else {
+                getRedirectResult(getAuth())
+                    .then(result => processLogin(result?.user))
+                    .catch(basicCatchToast);
+            }
         }
-    }, [loginState]);
-
+        setTimeout(() => setIsPending(false), 3000);
+    }, [isLoggedIn]);
 
     const signIn = () => {
-        setLoginState(AuthStatuses.PENDING);
-        const signInMethod = process.env.NODE_ENV == 'development' ?
-            signInWithPopup : signInWithRedirect; // Popup is mandatory for localhost
         signInMethod(getAuth(), new GoogleAuthProvider())
             .catch(basicCatchToast);
-    };
+        setIsPending(true);
+    }
 
-
-    const signOut = () => {
-        setLoginState(AuthStatuses.PENDING);
-        getAuth()
+    const signOut = () => getAuth()
         .signOut()
         .then(() => {
-            processUser(null);
+            processLogout();
             deleteApp(getApp()).catch(basicCatchToast);
         })
         .catch(basicCatchToast);
-    };
 
     return {
         user,
         userRoles,
         signIn,
         signOut,
-        isLoggingPending: loginState === AuthStatuses.PENDING,
-        isLoggedIn: loginState === AuthStatuses.LOGGED_IN,
-        isLoggedOut: loginState === AuthStatuses.LOGGED_OUT,
+        isLoggedIn,
+        isPending
     };
 }

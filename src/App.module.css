@@ -62,5 +62,5 @@ header h1 {
 
 .mainContent {
   padding: 2rem 2rem;
-  border: 1px solid #ccc;
+  border: 0px solid red;
 }

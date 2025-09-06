@@ -1,10 +1,11 @@
 import { useFirebase } from './hooks/useFirebase'
 import { useState } from 'react';
 import styles from './App.module.css';
+import loaderStyles from './components/Loader.module.css';
 import classNames from 'classnames';
 
 const App = () => {
-  const { user, signIn, signOut, isLoggedIn, isLoggedOut, isLoggingPending } = useFirebase();
+  const { user, signIn, signOut, isLoggedIn, isPending } = useFirebase();
   const headerClasses = classNames(
     { [styles.loggedout]: !isLoggedIn }
   );
@@ -16,9 +17,9 @@ const App = () => {
       )}
     </header>
     <div className={classNames(styles.loggingOverlay, { [styles.loggedIn]: isLoggedIn })}>
-      {isLoggingPending ? <p>Chargement...</p>
-        : isLoggedOut ? <button onClick={signIn}>Se connecter avec Google</button>
-        : null}
+      {isPending ? <span className={loaderStyles.loader} />
+      : isLoggedIn ? null 
+      : <button onClick={signIn}>Se connecter avec Google</button>}
     </div>
     {isLoggedIn && <div className={styles.mainContent}>
       <p>
