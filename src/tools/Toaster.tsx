@@ -1,5 +1,5 @@
 import 'react-toastify/dist/ReactToastify.min.css';
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 export const Toaster = () => {
     return <ToastContainer 
@@ -13,4 +13,9 @@ export const Toaster = () => {
     draggable={false}
     theme={'colored'}
     pauseOnHover />;
+};
+
+export const basicCatchToast = (error: any) => {
+  console.error(error)
+  toast.error('Something went wrong...')
 };

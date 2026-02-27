@@ -6,12 +6,12 @@ import { useFirebase } from "../hooks/useFirebase";
 interface ISignContext {
   signIn: () => void;
   signOut: () => void;
-  isFullyLoggedIn: () => boolean;
+  isLoggedIn: boolean;
 }
 
 export interface IUserContext extends ISignContext {
-  user?: User;
-  roles?: string[];
+  user: User | null;
+  roles: string[];
 }
 
 export interface ISafeUserContext extends ISignContext {

@@ -36,11 +36,11 @@ const App = () => {
       {loader}
       <Header {...userContext} />
       <div className='main'>
-        {userContext.isFullyLoggedIn() && <div className={`menu ${menuState}`}>
+        {userContext.isLoggedIn && <div className={`menu ${menuState}`}>
           <MenuButtons onButtonClicked={closeMenu} userContext={userContext as ISafeUserContext}/>
         </div>}
         <div className='container'>
-          {userContext.isFullyLoggedIn() ? (
+          {userContext.isLoggedIn ? (
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/writeRecipe">

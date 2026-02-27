@@ -1,77 +1,93 @@
-import { getApps, deleteApp, initializeApp, getApp } from "firebase/app";
-import { getAuth, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signInWithRedirect, User } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getUser } from "../dataServices/UserService";
-import { config } from "../firebase-config";
+import { getApps, deleteApp, initializeApp, getApp } from 'firebase/app';
+import { getAuth, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, User } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+import { getUser } from '../dataServices/UserService';
+import { config } from '../firebase-config';
+import { basicCatchToast } from '../tools/Toaster';
+
+const isDevMode = process.env.NODE_ENV == 'development';
+const signInMethod = isDevMode ? signInWithPopup : signInWithRedirect; // Popup is mandatory for localhost
 
 export const useFirebase = () => {
-    const [user, setUser] = useState<User>();
-    const [roles, setRoles] = useState<string[]>();
-    const [isListeningAuth, setIsListeningAuth] = useState<boolean>(false);
-    const navigate = useNavigate();
+    const [user, setUser] = useState<User | null>(null);
+    const [roles, setRoles] = useState<string[]>([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isPending, setIsPending] = useState(true);
 
-    if (!getApps().length) {
+    const processLogin = (userToProcess?: User | null) => {
+        if (userToProcess) {
+            getUser(userToProcess.email!)
+                .then(dbUser => {
+                    setRoles([...dbUser.roles])
+                    setUser(userToProcess);
+                })
+                .catch(basicCatchToast)
+                .finally(() => {
+                    setIsLoggedIn(true);
+                    setIsPending(false);
+                });
+        }
+    };
+    const processLogout = () => {
+        setUser(null);
+        setRoles([]);
+        setIsLoggedIn(false);
+        setIsPending(false);
+    };
+
+    if (getApps().length === 0) {
         initializeApp(config);
     }
 
-    const listenAuthState = () => {
-        if (isListeningAuth) return;
-        setIsListeningAuth(true);
-        onAuthStateChanged(getAuth(), changedUser => {
+    useEffect(() => {
+        const auth = getAuth();
+
+        // Always listen for auth state changes (detect persisted sessions)
+        const unsubscribe = onAuthStateChanged(auth, changedUser => {
             if (changedUser) {
-                setUser(changedUser);
-                console.log('User state changed to signed in !');
+                processLogin(changedUser);
             } else {
-                setUser(undefined);
+                processLogout();
             }
         });
-    };
 
-    useEffect(() => {
-        if (isListeningAuth) return;
-        getRedirectResult(getAuth())
-            .then((result) => {
-                if (result) {
-                    setUser(result.user);
-                    console.log('User signed in !');
-                } else {
-                    console.log('No user is signed in.');
-                    listenAuthState();
-                }
-            })
-    });
-
-    useEffect(() => {
-        if (user && !roles) {
-            getUser(user.email as string)
-                .then(dbUser => setRoles(dbUser.roles));
+        // If using redirect flow (prod), also handle the redirect result once
+        if (!isDevMode) {
+            getRedirectResult(auth)
+                .then(result => {
+                    if (result?.user) processLogin(result.user);
+                })
+                .catch(basicCatchToast);
         }
-    }, [user, roles]);
+
+        const timeout = setTimeout(() => setIsPending(false), 3000);
+
+        return () => {
+            unsubscribe();
+            clearTimeout(timeout);
+        };
+    }, []);
 
     const signIn = () => {
-        signInWithRedirect(getAuth(), new GoogleAuthProvider())
-            .catch((error) => {
-                console.error(error);
-            });
+        signInMethod(getAuth(), new GoogleAuthProvider())
+            .catch(basicCatchToast);
+        setIsPending(true);
+    }
+
+    const signOut = () => getAuth()
+        .signOut()
+        .then(() => {
+            processLogout();
+            deleteApp(getApp()).catch(basicCatchToast);
+        })
+        .catch(basicCatchToast);
+
+    return {
+        user,
+        roles,
+        signIn,
+        signOut,
+        isLoggedIn,
+        isPending
     };
-
-    const signOut = () => {
-        getAuth()
-            .signOut()
-            .then(() => {
-                setUser(undefined);
-                deleteApp(getApp());
-                console.log('Destroyed app and user !');
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        navigate('/');
-    };
-
-    const isFullyLoggedIn = () => !!user && !!roles;
-
-    return { user, roles, signIn, signOut, isFullyLoggedIn};
-};
-
+}
