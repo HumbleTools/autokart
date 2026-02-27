@@ -43,7 +43,7 @@ export const ViewRecipe = () => {
                 <h4 className="mt-1">{recipe.name}</h4>
                 <p className="text-right">Pour {recipe.servings} personne{recipe.servings >= 1 ? 's' : ''}</p>
                 <h5>Description</h5>
-                <p>{recipe.description}</p>
+                <p style={{ whiteSpace: 'pre-wrap' }}>{recipe.description}</p>
                 <h5>Tags</h5>
                 <p>{displayTags(recipe.tags)}</p>
                 {recipe.ingredients && <>
