@@ -1,8 +1,8 @@
 import { getApps, deleteApp, initializeApp, getApp } from 'firebase/app';
 import { getAuth, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-import { getUser } from '../services/UserService';
 import { config } from '../firebase-config';
+import { getUser } from '../services/UserService';
 import { basicCatchToast } from '../utils/ToasterUtils';
 
 const isDevMode = process.env.NODE_ENV == 'development';
@@ -10,7 +10,7 @@ const signInMethod = isDevMode ? signInWithPopup : signInWithRedirect; // Popup 
 
 export const useFirebase = () => {
     const [user, setUser] = useState<User | null>(null);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
+    const [roles, setRoles] = useState<string[]>([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isPending, setIsPending] = useState(true);
 
@@ -18,7 +18,7 @@ export const useFirebase = () => {
         if (userToProcess) {
             getUser(userToProcess.email!)
                 .then(dbUser => {
-                    setUserRoles([...dbUser.roles])
+                    setRoles([...dbUser.roles])
                     setUser(userToProcess);
                 })
                 .catch(basicCatchToast)
@@ -30,7 +30,7 @@ export const useFirebase = () => {
     };
     const processLogout = () => {
         setUser(null);
-        setUserRoles([]);
+        setRoles([]);
         setIsLoggedIn(false);
         setIsPending(false);
     };
@@ -40,19 +40,33 @@ export const useFirebase = () => {
     }
 
     useEffect(() => {
-        if (!user) {
-            if (isDevMode) {
-                onAuthStateChanged(getAuth(), changedUser => {
-                    processLogin(changedUser);
-                });
+        const auth = getAuth();
+
+        // Always listen for auth state changes (detect persisted sessions)
+        const unsubscribe = onAuthStateChanged(auth, changedUser => {
+            if (changedUser) {
+                processLogin(changedUser);
             } else {
-                getRedirectResult(getAuth())
-                    .then(result => processLogin(result?.user))
-                    .catch(basicCatchToast);
+                processLogout();
             }
+        });
+
+        // If using redirect flow (prod), also handle the redirect result once
+        if (!isDevMode) {
+            getRedirectResult(auth)
+                .then(result => {
+                    if (result?.user) processLogin(result.user);
+                })
+                .catch(basicCatchToast);
         }
-        setTimeout(() => setIsPending(false), 3000);
-    }, [isLoggedIn]);
+
+        const timeout = setTimeout(() => setIsPending(false), 3000);
+
+        return () => {
+            unsubscribe();
+            clearTimeout(timeout);
+        };
+    }, []);
 
     const signIn = () => {
         signInMethod(getAuth(), new GoogleAuthProvider())
@@ -70,7 +84,7 @@ export const useFirebase = () => {
 
     return {
         user,
-        userRoles,
+        roles,
         signIn,
         signOut,
         isLoggedIn,
