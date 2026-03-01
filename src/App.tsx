@@ -1,5 +1,6 @@
 import { useFirebase } from './hooks/useFirebase'
 import { useState } from 'react';
+import runawayIcon from './assets/runaway.svg';
 import styles from './App.module.css';
 import loaderStyles from './components/loader.module.css';
 import buttonStyles from './components/buttons.module.css';
@@ -8,6 +9,7 @@ import AkButton from './components/AkButton';
 
 const App = () => {
   const { user, signIn, signOut, isLoggedIn, isPending } = useFirebase();
+
   const headerClasses = classNames(
     { [styles.loggedout]: !isLoggedIn }
   );
@@ -15,7 +17,17 @@ const App = () => {
     <header className={headerClasses}>
       <h1>AUTOKART</h1>
       {isLoggedIn && user?.photoURL && (
-        <Avatar src={user.photoURL} onClick={signOut} />
+        <Avatar src={user.photoURL} />
+      )}
+      {isLoggedIn && (
+        <button
+          className={styles.logoutIcon}
+          onClick={signOut}
+          aria-label="Se déconnecter"
+          title="Se déconnecter"
+        >
+          <img src={runawayIcon} alt="Se déconnecter" />
+        </button>
       )}
     </header>
     <div className={classNames(styles.loggingOverlay, { [styles.loggedIn]: isLoggedIn })}>
@@ -97,7 +109,7 @@ export default App;
 
 interface AvatarProps {
   src: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const Avatar: React.FC<AvatarProps> = ({ src, onClick }) => {
@@ -111,6 +123,7 @@ const Avatar: React.FC<AvatarProps> = ({ src, onClick }) => {
       onClick={onClick}
       onLoad={() => setLoaded(true)}
       style={{ opacity: loaded ? 1 : 0 }}
+      crossOrigin='anonymous'
     />
   );
 };

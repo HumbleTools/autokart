@@ -26,7 +26,7 @@ header h1 {
 .avatar {
   position: absolute;
   top: 50%;
-  right: 2rem;
+  right: 4rem;
   transform: translateY(-50%);
   border: 2px solid #fff;
   border-radius: 50%;
@@ -40,6 +40,26 @@ header h1 {
 
 .avatarVisible {
   opacity: 1;
+}
+
+.logoutIcon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.logoutIcon img {
+  object-fit: cover;
+  display: block;
+  width: 35px;
+  height: 35px;
 }
 
 .loggingOverlay {
