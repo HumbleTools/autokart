@@ -6,7 +6,6 @@ import { getUser } from '../services/UserService';
 import { basicCatchToast } from '../utils/ToasterUtils';
 
 const isDevMode = process.env.NODE_ENV == 'development';
-const signInMethod = isDevMode ? signInWithPopup : signInWithRedirect; // Popup is mandatory for localhost
 
 export const useFirebase = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -69,9 +68,19 @@ export const useFirebase = () => {
     }, []);
 
     const signIn = () => {
-        signInMethod(getAuth(), new GoogleAuthProvider())
-            .catch(basicCatchToast);
+        const auth = getAuth();
         setIsPending(true);
+        if (isDevMode) {
+            // Popup is mandatory for localhost
+            signInWithPopup(auth, new GoogleAuthProvider())
+                .then(result => {
+                    if (result?.user) processLogin(result.user);
+                })
+                .catch(basicCatchToast);
+        } else {
+            signInWithRedirect(auth, new GoogleAuthProvider())
+                .catch(basicCatchToast);
+        }
     }
 
     const signOut = () => getAuth()
