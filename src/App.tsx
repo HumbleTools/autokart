@@ -2,6 +2,7 @@ import { useFirebase } from './hooks/useFirebase'
 import { useState } from 'react';
 import runawayIcon from './assets/runaway.svg';
 import styles from './App.module.css';
+import pkg from '../package.json';
 import loaderStyles from './components/loader.module.css';
 import buttonStyles from './components/buttons.module.css';
 import classNames from 'classnames';
@@ -15,7 +16,7 @@ const App = () => {
   );
   return <>
     <header className={headerClasses}>
-      <h1>AUTOKART</h1>
+      <h1>AUTOKART{isLoggedIn && (<span className={styles.version}>v{pkg.version}</span>)}</h1>
       {isLoggedIn && user?.photoURL && (
         <Avatar src={user.photoURL} />
       )}

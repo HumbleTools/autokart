@@ -23,6 +23,12 @@ header h1 {
   transition: transform 0.5s ease, left 0.5s ease;
 }
 
+.version {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.9);
+  vertical-align: sub;
+}
+
 .avatar {
   position: absolute;
   top: 50%;
